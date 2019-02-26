@@ -4,13 +4,14 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from time import sleep
 import datetime
-from pprint import pprint
 
 USER_NAME = 'USER_NAME'
 PASSWORD = 'PASSWORD'
 LIST_NAME = 'media'
 TOTAL_FOLLOW_LIMIT = 20
 ACCOUNT_FOLLOW_LIMIT = 5
+
+remain_follow_count = TOTAL_FOLLOW_LIMIT
 
 def loginTwitter(browser: webdriver):
     """
@@ -54,6 +55,7 @@ def getAccountsFromList(browser: webdriver):
     return account_list
 
 def getNotFollowingAccounts(browser: webdriver, account):
+    global remain_follow_count
     """
     Twitterでアカウントのフォロワーをフォローする
     :param browser: webdriver
@@ -67,9 +69,8 @@ def getNotFollowingAccounts(browser: webdriver, account):
     grid = browser.find_element_by_class_name("GridTimeline")
     profile_cards = grid.find_elements_by_class_name("js-actionable-user")
     limit = ACCOUNT_FOLLOW_LIMIT
-    follow_count = 0
     for profile_card in profile_cards:
-        if limit > 0:
+        if remain_follow_count > 0:
             is_follow = profile_card.find_elements_by_class_name("not-following")# ない
             description = profile_card.find_element_by_class_name("ProfileCard-bio")
             description_text = description.text
@@ -77,11 +78,9 @@ def getNotFollowingAccounts(browser: webdriver, account):
             if len(description_text) > 20 and is_follow != [] and follow_btn != [] :
                 follow_btn[0].click()
                 sleep(1)
-                limit = limit - 1
-                follow_count = follow_count + 1
+                remain_follow_count = remain_follow_count - 1
         else:
             break
-    return follow_count
 
 if __name__ == '__main__':
     try:
@@ -98,13 +97,9 @@ if __name__ == '__main__':
         # Twitterで自動フォローする
         accounts = getAccountsFromList(browser)
         targetAccounts = []
-        total_follow = TOTAL_FOLLOW_LIMIT
         for account in accounts:
             if account != None:
-                if total_follow > 0:
-                    total_follow - getNotFollowingAccounts(browser, account)
-                else:
-                    break
+                getNotFollowingAccounts(browser, account)
 
     finally:
         # 終了
