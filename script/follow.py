@@ -54,12 +54,13 @@ def getAccountsFromList(browser: webdriver):
 
     # リストにアクセスする
     browser.get('https://twitter.com/'+ USER_NAME +'/lists/'+ LIST_NAME +'/members')
-    browser.save_screenshot('images/' + dtstr + '.png')
 
     accounts = browser.find_elements_by_class_name("js-actionable-user")
     account_list = []
     for account in accounts:
-        account_list.append(account.get_attribute('data-screen-name'))
+        name = account.get_attribute('data-screen-name')
+        if name != None:
+            account_list.append(name)
     return account_list
 
 def getNotFollowingAccounts(browser: webdriver, account):
@@ -107,8 +108,7 @@ if __name__ == '__main__':
         accounts = getAccountsFromList(browser)
         random.shuffle(accounts)
         for account in tqdm(accounts):
-            if account != None:
-                getNotFollowingAccounts(browser, account)
+            getNotFollowingAccounts(browser, account)
 
     finally:
         # 終了
