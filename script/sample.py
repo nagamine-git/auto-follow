@@ -4,11 +4,19 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from time import sleep
 import datetime
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+import random
+from tqdm import tqdm
 
-USER_NAME = 'USER_NAME'
-PASSWORD = 'PASSWORD'
+dotenv_path = join(dirname(__file__), 'config', '.env')
+load_dotenv(dotenv_path)
+
+USER_NAME = os.environ.get("USER_NAME")
+PASSWORD = os.environ.get("PASSWORD")
 LIST_NAME = 'media'
-TOTAL_FOLLOW_LIMIT = 20
+TOTAL_FOLLOW_LIMIT = 30
 ACCOUNT_FOLLOW_LIMIT = 5
 
 remain_follow_count = TOTAL_FOLLOW_LIMIT
@@ -96,8 +104,8 @@ if __name__ == '__main__':
         loginTwitter(browser)
         # Twitterで自動フォローする
         accounts = getAccountsFromList(browser)
-        targetAccounts = []
-        for account in accounts:
+        random.shuffle(accounts)
+        for account in tqdm(accounts):
             if account != None:
                 getNotFollowingAccounts(browser, account)
 
