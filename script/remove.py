@@ -18,7 +18,7 @@ load_dotenv(dotenv_path)
 USER_NAME = os.environ.get("USER_NAME")
 PASSWORD = os.environ.get("PASSWORD")
 REMOVE_IGNORE_LISTS = os.environ.get("REMOVE_IGNORE_LISTS")
-TOTAL_REMOVE_LIMIT = 1
+TOTAL_REMOVE_LIMIT = 30
 
 remain_remove_count = TOTAL_REMOVE_LIMIT
 
