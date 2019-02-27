@@ -15,7 +15,7 @@ load_dotenv(dotenv_path)
 
 USER_NAME = os.environ.get("USER_NAME")
 PASSWORD = os.environ.get("PASSWORD")
-LIST_NAME = 'media'
+FOLLOW_TARGET_LISTS = os.environ.get("FOLLOW_TARGET_LISTS")
 TOTAL_FOLLOW_LIMIT = 30
 ACCOUNT_FOLLOW_LIMIT = 5
 
@@ -26,9 +26,6 @@ def loginTwitter(browser: webdriver):
     Twitterにログインする
     :param browser: webdriver
     """
-    # スクリーンショットのファイル名用に日付を取得
-    dt = datetime.datetime.today()
-    dtstr = dt.strftime("%Y%m%d%H%M%S")
 
     # twitterにアクセス
     browser.get('https://twitter.com/login')
@@ -43,17 +40,14 @@ def loginTwitter(browser: webdriver):
     password.submit()
     sleep(1)
 
-def getAccountsFromList(browser: webdriver):
+def getAccountsFromList(browser: webdriver, list_name):
     """
     Twitterでリストのフォロワーを抽出する
     :param browser: webdriver
     """
-    # スクリーンショットのファイル名用に日付を取得
-    dt = datetime.datetime.today()
-    dtstr = dt.strftime("%Y%m%d%H%M%S")
 
     # リストにアクセスする
-    browser.get('https://twitter.com/'+ USER_NAME +'/lists/'+ LIST_NAME +'/members')
+    browser.get('https://twitter.com/'+ USER_NAME +'/lists/'+ list_name +'/members')
 
     accounts = browser.find_elements_by_class_name("js-actionable-user")
     account_list = []
@@ -69,9 +63,6 @@ def getNotFollowingAccounts(browser: webdriver, account):
     Twitterでアカウントのフォロワーをフォローする
     :param browser: webdriver
     """
-    # スクリーンショットのファイル名用に日付を取得
-    dt = datetime.datetime.today()
-    dtstr = dt.strftime("%Y%m%d%H%M%S")
 
     # リストにアクセスする
     browser.get('https://twitter.com/'+ account + '/followers')
@@ -105,7 +96,9 @@ if __name__ == '__main__':
         # Twitterにログイン
         loginTwitter(browser)
         # Twitterで自動フォローする
-        accounts = getAccountsFromList(browser)
+        accounts = []
+        for follow_target_list in FOLLOW_TARGET_LISTS:
+            accounts.extend(getAccountsFromList(browser, follow_target_list))
         random.shuffle(accounts)
         for account in tqdm(accounts):
             getNotFollowingAccounts(browser, account)
