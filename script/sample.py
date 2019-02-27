@@ -79,11 +79,12 @@ def getNotFollowingAccounts(browser: webdriver, account):
     limit = ACCOUNT_FOLLOW_LIMIT
     for profile_card in profile_cards:
         if remain_follow_count > 0:
-            is_follow = profile_card.find_elements_by_class_name("not-following")# ない
+            is_follow = bool(profile_card.find_elements_by_class_name("not-following"))
+            is_open = bool(profile_card.find_elements_by_class_name("js-protected"))
             description = profile_card.find_element_by_class_name("ProfileCard-bio")
             description_text = description.text
             follow_btn = profile_card.find_elements_by_class_name("follow-text")
-            if len(description_text) > 20 and is_follow != [] and follow_btn != [] :
+            if len(description_text) > 20 and is_follow and bool(follow_btn):
                 follow_btn[0].click()
                 sleep(1)
                 remain_follow_count = remain_follow_count - 1
