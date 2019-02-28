@@ -41,6 +41,7 @@ def loginTwitter(browser: webdriver):
     sleep(1)
 
 def getAccountsFromList(browser: webdriver, list_name):
+    print(list_name)
     """
     Twitterでリストのフォロワーを抽出する
     :param browser: webdriver

@@ -19,6 +19,7 @@ USER_NAME = os.environ.get("USER_NAME")
 PASSWORD = os.environ.get("PASSWORD")
 REMOVE_IGNORE_LISTS = os.environ.get("REMOVE_IGNORE_LISTS")
 TOTAL_REMOVE_LIMIT = 30
+remove_ignore_lists = REMOVE_IGNORE_LISTS.split(',')
 
 remain_remove_count = TOTAL_REMOVE_LIMIT
 
@@ -58,6 +59,7 @@ def removeKataomoi(browser: webdriver, safe_accounts):
     # 古い順位に並び替え
     reversed_trs = reversed(trs)
 
+    print('▼フォロー解除中…▼')
     for tr in reversed_trs:
         if remain_remove_count <= 0:
             break
@@ -80,9 +82,12 @@ if __name__ == '__main__':
         # リストの中のアカウントはremoveしない
         loginTwitter(browser)
         safe_accounts = []
-        for remove_ignore_list in REMOVE_IGNORE_LISTS:
-            safe_accounts.extend(getAccountsFromList(browser, remove_ignore_list))
+        for remove_ignore_list in remove_ignore_lists:
+            ignore_list = getAccountsFromList(browser, remove_ignore_list)
+            safe_accounts.extend(ignore_list)
         # 片思いったーにログイン
+        print('▼以下のアカウントはフォロー解除されません▼')
+        print(safe_accounts)
         removeKataomoi(browser, safe_accounts)
 
     finally:
