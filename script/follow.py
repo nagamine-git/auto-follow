@@ -16,6 +16,8 @@ load_dotenv(dotenv_path)
 USER_NAME = os.environ.get("USER_NAME")
 PASSWORD = os.environ.get("PASSWORD")
 FOLLOW_TARGET_LISTS = os.environ.get("FOLLOW_TARGET_LISTS")
+follow_target_lists = FOLLOW_TARGET_LISTS.split(',')
+
 TOTAL_FOLLOW_LIMIT = 30
 ACCOUNT_FOLLOW_LIMIT = 5
 
@@ -41,7 +43,6 @@ def loginTwitter(browser: webdriver):
     sleep(1)
 
 def getAccountsFromList(browser: webdriver, list_name):
-    print(list_name)
     """
     Twitterでリストのフォロワーを抽出する
     :param browser: webdriver
@@ -98,7 +99,7 @@ if __name__ == '__main__':
         loginTwitter(browser)
         # Twitterで自動フォローする
         accounts = []
-        for follow_target_list in FOLLOW_TARGET_LISTS:
+        for follow_target_list in follow_target_lists:
             accounts.extend(getAccountsFromList(browser, follow_target_list))
         random.shuffle(accounts)
         for account in tqdm(accounts):
