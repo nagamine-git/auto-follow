@@ -68,6 +68,7 @@ def removeKataomoi(browser: webdriver, safe_accounts):
             print(tds[1].find_element_by_tag_name("a").text)
             tr.find_elements_by_tag_name("span")[0].click()
             remain_remove_count = remain_remove_count - 1
+            sleep(0.5)
 
 if __name__ == '__main__':
     try:
