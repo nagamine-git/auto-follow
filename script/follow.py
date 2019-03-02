@@ -72,7 +72,7 @@ def getNotFollowingAccounts(browser: webdriver, account):
     profile_cards = grid.find_elements_by_class_name("js-actionable-user")
     limit = ACCOUNT_FOLLOW_LIMIT
     for profile_card in profile_cards:
-        if remain_follow_count > 0:
+        if remain_follow_count > 0 and limit > 0:
             is_follow = bool(profile_card.find_elements_by_class_name("not-following"))
             is_open = bool(profile_card.find_elements_by_class_name("js-protected"))
             description = profile_card.find_element_by_class_name("ProfileCard-bio")
@@ -82,6 +82,7 @@ def getNotFollowingAccounts(browser: webdriver, account):
                 follow_btn[0].click()
                 sleep(1)
                 remain_follow_count = remain_follow_count - 1
+                limit = limit - 1
         else:
             break
 
