@@ -59,7 +59,7 @@ def getAccountsFromList(browser: webdriver, list_name):
             account_list.append(name)
     return account_list
 
-def getNotFollowingAccounts(browser: webdriver, account):
+def followAccountsFromList(browser: webdriver, account):
     global remain_follow_count
     """
     Twitterでアカウントのフォロワーをフォローする
@@ -104,7 +104,7 @@ if __name__ == '__main__':
             accounts.extend(getAccountsFromList(browser, follow_target_list))
         random.shuffle(accounts)
         for account in tqdm(accounts):
-            getNotFollowingAccounts(browser, account)
+            followAccountsFromList(browser, account)
 
     finally:
         # 終了
